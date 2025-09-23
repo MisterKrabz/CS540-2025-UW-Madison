@@ -1,0 +1,5 @@
+﻿Works Cited
+Chang, Y., Wang, X., Wang, J., Wu, Y., Yang, L., Zhu, K., ... & Xie, X. (2024). A survey on evaluation of large language models. ACM transactions on intelligent systems and technology, 15(3), 1-45.
+Huang, L., Yu, W., Ma, W., Zhong, W., Feng, Z., Wang, H., ... & Liu, T. (2025). A survey on hallucination in large language models: Principles, taxonomy, challenges, and open questions. ACM Transactions on Information Systems, 43(2), 1-55.
+[deleted user]. (2023, May 10). Why does it take back the answers regardless if I’m right or not? Reddit. https://www.reddit.com/r/ChatGPT/comments/13ebm9c/why_does_it_take_back_the_answer_regardless_if_im/
+Marwala, T. (2024, July 18). Never assume that the accuracy of artificial intelligence information equals the truth. United Nations University. https://unu.edu/article/never-assume-accuracy-artificial-intelligence-information-equals-truth
