@@ -11,8 +11,8 @@ def get_parameter_vectors():
 
     Returns: tuple of vectors e and s
     '''
-    #Implementing vectors e,s as lists (arrays) of length 26
-    #with p[0] being the probability of 'A' and so on
+    # Implementing vectors e,s as lists (arrays) of length 26
+    # with p[0] being the probability of 'A' and so on
     e=[0]*26
     s=[0]*26
 
@@ -75,7 +75,7 @@ def shred(filename):
 # You are free to implement it as you wish!
 # Happy Coding!
 def main(): 
-    # Check for the correct number of command line arguments
+    # Check for the correct number of CLA
     if(len(sys.argv) != 4):
         print("Usage: python3 hw2.py <letter_file> <english_prior> <spanish_prior>")
         sys.exit(1)
@@ -90,69 +90,59 @@ def main():
     # Get the language model parameter vectors
     e, s = get_parameter_vectors()
 
-    # --- Q1 ---
-    # Compute X1 * log(e1) and X1 * log(s1) where X1 is the count for 'A'
+    # Q1 ([33] points): Compute X1 log e1 and X1 log s1 (remember that X1 is the
+    # count of character ’A’). Print “Q1” then these values up to 4 decimal places
+    # on two separate lines.
     print("Q1")
-    # X1 is the count of character 'A'
+    # count of character 'A'
     x1 = character_counts['A']
-    # e1 is the probability of 'A' in English (index 0)
+    # probability of 'A' in english 
     e1 = e[0]
-    # s1 is the probability of 'A' in Spanish (index 0)
+    # probability of 'A' in spanish 
     s1 = s[0]
 
-    # Calculate the required values. If x1 is 0, the result is 0.
-    q1_english_val = x1 * math.log(e1) if x1 > 0 else 0.0
-    q1_spanish_val = x1 * math.log(s1) if x1 > 0 else 0.0
+    # calculate and print
+    q1_english_val = x1 * math.log(e1) 
+    q1_spanish_val = x1 * math.log(s1) 
     
-    # Print formatted output
     print(f"{q1_english_val:.4f}")
     print(f"{q1_spanish_val:.4f}")
 
-    # --- Q2 ---
-    # Compute F(English) and F(Spanish) using the log-sum formula
+    # Q2 ([33] points): Compute F (English) and F (Spanish). Similarly, print
+    # “Q2” followed by their values up to 4 decimal places on two separate lines.
     print("Q2")
     # Initialize scores with the log of the prior probabilities
     f_english = math.log(english_prior)
     f_spanish = math.log(spanish_prior)
 
-    # Loop through all 26 characters of the alphabet
+    # loop through the characters
     for i in range(26):
         char = chr(ord('A') + i)
         count = character_counts[char]
 
         # Add the term X_i * log(p_i) to the total log probability
-        # This is only done if the count is non-zero to avoid unnecessary computation
-        if count > 0:
-            f_english += count * math.log(e[i])
-            f_spanish += count * math.log(s[i])
+        f_english += count * math.log(e[i])
+        f_spanish += count * math.log(s[i])
     
-    # Print formatted output
     print(f"{f_english:.4f}")
     print(f"{f_spanish:.4f}")
 
-    # --- Q3 ---
-    # Compute the conditional probability P(Y = English | X)
+    # Q3 ([34] points): Compute P (Y = English | X). Print “Q3” then this value
+    # up to 4 decimal places
     print("Q3")
     prob_english = 0.0
-    # Calculate the difference F(Spanish) - F(English) for the stable formula
+    # Calculate the difference 
     f_diff = f_spanish - f_english
 
-    # Apply the specified checks for numerical stability to avoid overflow/underflow
+    # if/else check 
     if f_diff >= 100:
         prob_english = 0.0
     elif f_diff <= -100:
         prob_english = 1.0
-    else:
-        # If the difference is within the stable range, use the formula
+    else: 
         prob_english = 1 / (1 + math.exp(f_diff))
     
-    # Print formatted output
     print(f"{prob_english:.4f}")
-
-
-
-
-
 
 if __name__ == "__main__":
     main()
