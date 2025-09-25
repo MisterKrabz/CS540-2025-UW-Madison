@@ -75,14 +75,18 @@ def shred(filename):
 # You are free to implement it as you wish!
 # Happy Coding!
 def main(): 
-    # Check for the correct number of CLA
-    if(len(sys.argv) != 4):
+    # Check for the correct number of CLA 
+    if len(sys.argv) == 4 :
+        # for a specific prior
+        english_prior = float(sys.argv[2])
+        spanish_prior = float(sys.argv[3])
+    elif len(sys.argv) == 2:
+        # for default priors
+        english_prior = 0.6
+        spanish_prior = 0.4
+    else: 
         print("Usage: python3 hw2.py <letter_file> <english_prior> <spanish_prior>")
         sys.exit(1)
-    
-    # Parse command line arguments
-    english_prior = float(sys.argv[2])
-    spanish_prior = float(sys.argv[3])
 
     # Get the character counts from the input file
     character_counts = shred(sys.argv[1])
@@ -120,9 +124,10 @@ def main():
         char = chr(ord('A') + i)
         count = character_counts[char]
 
-        # Add the term X_i * log(p_i) to the total log probability
-        f_english += count * math.log(e[i])
-        f_spanish += count * math.log(s[i])
+        # Add X_i * log(p_i) to the total log probability
+        if count > 0:
+            f_english += count * math.log(e[i])
+            f_spanish += count * math.log(s[i])
     
     print(f"{f_english:.4f}")
     print(f"{f_spanish:.4f}")
