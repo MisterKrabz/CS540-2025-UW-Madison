@@ -59,9 +59,9 @@ def shred(filename):
     with open (filename,encoding='utf-8') as f:
         corpus=f.read()
     f.close()
-    #convert all lowercase alphabets to uppercase
+    # convert all lowercase alphabets to uppercase
     corpus=corpus.upper()
-    #initialize X
+    # initialize X
     for a in string.ascii_uppercase:
         boc[a]=0
     for c in corpus:
@@ -91,21 +91,21 @@ def main():
     # Get the character counts from the input file
     character_counts = shred(sys.argv[1])
 
-    # Get the language model parameter vectors
+    # Get the parameter vectors
     e, s = get_parameter_vectors()
 
     # Q1 ([33] points): Compute X1 log e1 and X1 log s1 (remember that X1 is the
     # count of character ’A’). Print “Q1” then these values up to 4 decimal places
     # on two separate lines.
     print("Q1")
-    # count of character 'A'
+    # count of A
     x1 = character_counts['A']
-    # probability of 'A' in english 
+    # probability of A in english
     e1 = e[0]
-    # probability of 'A' in spanish 
+    # probability of A in spanish
     s1 = s[0]
 
-    # calculate and print
+    # calculate 
     q1_english_val = x1 * math.log(e1) 
     q1_spanish_val = x1 * math.log(s1) 
     
@@ -144,7 +144,7 @@ def main():
         prob_english = 0.0
     elif f_diff <= -100:
         prob_english = 1.0
-    else: 
+    else:
         prob_english = 1 / (1 + math.exp(f_diff))
     
     print(f"{prob_english:.4f}")
