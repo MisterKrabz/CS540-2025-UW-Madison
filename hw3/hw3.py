@@ -14,8 +14,10 @@ def load_and_center_dataset(filename):
     Returns:
         numpy.ndarray: Centered dataset (n x d matrix)
     """
-    # Your implementation goes here!
-    raise NotImplementedError
+    x = np.load(filename)
+    centered_x = x - np.mean(x, axis = 0)
+
+    return centered_x
 
 def get_covariance(dataset):
     """
@@ -27,8 +29,9 @@ def get_covariance(dataset):
     Returns:
         numpy.ndarray: Covariance matrix (d x d matrix)
     """
-    # Your implementation goes here!
-    raise NotImplementedError
+    n = dataset.shape[0]
+    S = (1/(n-1)) * np.dot(dataset.T, dataset)
+    return S
 
 def get_eig(S, k):
     """
@@ -42,8 +45,13 @@ def get_eig(S, k):
         tuple: (Lambda, U) where Lambda is diagonal matrix of eigenvalues
                and U is matrix of corresponding eigenvectors as columns
     """
-    # Your implementation goes here!
-    raise NotImplementedError
+    d = S.shape[0]
+    eigenvalues, eigenvectors = eigh(S, subset_by_index=[d - k, d - 1])
+    sorted_eigenvalues = np.flip(eigenvalues)
+    sorted_eigenvectors = np.flip(eigenvectors, axis=1)
+    Lambda = np.diag(sorted_eigenvalues)
+
+    return (Lambda, sorted_eigenvectors)
 
 def get_eig_prop(S, prop):
     """
@@ -57,8 +65,23 @@ def get_eig_prop(S, prop):
         tuple: (Lambda, U) where Lambda is diagonal matrix of eigenvalues
                and U is matrix of corresponding eigenvectors as columns
     """
-    # Your implementation goes here!
-    raise NotImplementedError
+    total_variance = np.trace(S)
+    if total_variance == 0:
+        return (np.array([[]]), np.array([[]]))
+    
+    all_eigenvalues, all_eigenvectors = eigh(S)
+
+    desc_eigenvalues = np.flip(all_eigenvalues)
+    desc_eigenvectors = np.flip(all_eigenvectors, axis=1)
+
+    propoertions = desc_eigenvalues / total_variance
+    indicies_to_keep = np.cumsum(propoertions) <= prop
+
+    selected_eigenvalues = desc_eigenvalues[indicies_to_keep]
+    selected_eigenvalues = desc_eigenvectors[:, indicies_to_keep]
+    Lambda = np.diag(selected_eigenvalues)
+
+    return Lambda, selected_eigenvalues
 
 def project_and_reconstruct_image(image, U):
     """
@@ -71,8 +94,9 @@ def project_and_reconstruct_image(image, U):
     Returns:
         numpy.ndarray: Reconstructed image as flattened d x 1 vector
     """
-    # Your implementation goes here!
-    raise NotImplementedError
+    alpha = np.dot(U.T, image)
+    reconstructed_image = np.dot(U, alpha)
+    return reconstructed_image
 
 def display_image(im_orig_fullres, im_orig, im_reconstructed):
     """
@@ -93,6 +117,52 @@ def display_image(im_orig_fullres, im_orig, im_reconstructed):
 
     # Your implementation goes here!
     # Note: Do NOT include plt.show() in your implementation - it will be called separately for testing
+    reshaped_fullres = im_orig_fullres.reshape(218, 178, 3)
+    reshaped_orig = im_orig.reshape(60, 50)
+    reshaped_reconstructed = im_reconstructed.reshape(60, 50)
+
+    ax1.imshow(reshaped_fullres, aspect='equal')
+    ax1.set_title("Original High Res")
+
+    im2 = ax2.imshow(reshaped_orig, aspect='equal', cmap='gray') # Added cmap='gray'
+    ax2.set_title("Original")
+    fig.colorbar(im2, ax=ax2)
+
+def display_image(im_orig_fullres, im_orig, im_reconstructed):
+    """
+    Display three images side by side: original high-res, original, and reconstructed.
+
+    Args:
+        im_orig_fullres (numpy.ndarray): Original high-resolution image
+        im_orig (numpy.ndarray): Original low-resolution image
+        im_reconstructed (numpy.ndarray): Reconstructed image from PCA
+
+    Returns:
+        tuple: (fig, ax1, ax2, ax3) matplotlib figure and axes objects
+    """
+
+    # Please use the format below to ensure grading consistency
+    fig, (ax1, ax2, ax3) = plt.subplots(figsize=(9,3), ncols=3)
+    fig.tight_layout()
+
+    # Reshape all the image vectors into 2D or 3D matrices
+    reshaped_fullres = im_orig_fullres.reshape(218, 178, 3)
+    reshaped_orig = im_orig.reshape(60, 50)
+    reshaped_reconstructed = im_reconstructed.reshape(60, 50)
+
+    # --- Plot 1: Original High Res ---
+    ax1.imshow(reshaped_fullres, aspect='equal')
+    ax1.set_title("Original High Res")
+
+    # --- Plot 2: Original Low Res (This part was missing) ---
+    im2 = ax2.imshow(reshaped_orig, aspect='equal', cmap='gray') 
+    ax2.set_title("Original")
+    fig.colorbar(im2, ax=ax2)
+
+    # --- Plot 3: Reconstructed Image ---
+    im3 = ax3.imshow(reshaped_reconstructed, aspect='equal', cmap='gray') 
+    ax3.set_title("Reconstructed")
+    fig.colorbar(im3, ax=ax3)
 
     return fig, ax1, ax2, ax3
 
@@ -258,3 +328,21 @@ class NGramCharLM:
 
         return "".join(out)
 
+if __name__ == "__main__":
+    X = load_and_center_dataset('celeba_60x50.npy')
+
+    S = get_covariance(X)
+    
+    Lambda, U = get_eig(S, 50)
+    
+    celeb_idx = 34 
+    
+    x = X[celeb_idx]
+    
+    x_fullres = np.load('celeba_218x178x3.npy')[celeb_idx]
+    
+    reconstructed = project_and_reconstruct_image(x, U)
+    
+    fig, ax1, ax2, ax3 = display_image(x_fullres, x, reconstructed)
+    
+    plt.show()
