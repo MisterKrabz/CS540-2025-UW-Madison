@@ -115,36 +115,6 @@ def display_image(im_orig_fullres, im_orig, im_reconstructed):
     fig, (ax1, ax2, ax3) = plt.subplots(figsize=(9,3), ncols=3)
     fig.tight_layout()
 
-    # Your implementation goes here!
-    # Note: Do NOT include plt.show() in your implementation - it will be called separately for testing
-    reshaped_fullres = im_orig_fullres.reshape(218, 178, 3)
-    reshaped_orig = im_orig.reshape(60, 50)
-    reshaped_reconstructed = im_reconstructed.reshape(60, 50)
-
-    ax1.imshow(reshaped_fullres, aspect='equal')
-    ax1.set_title("Original High Res")
-
-    im2 = ax2.imshow(reshaped_orig, aspect='equal', cmap='gray') # Added cmap='gray'
-    ax2.set_title("Original")
-    fig.colorbar(im2, ax=ax2)
-
-def display_image(im_orig_fullres, im_orig, im_reconstructed):
-    """
-    Display three images side by side: original high-res, original, and reconstructed.
-
-    Args:
-        im_orig_fullres (numpy.ndarray): Original high-resolution image
-        im_orig (numpy.ndarray): Original low-resolution image
-        im_reconstructed (numpy.ndarray): Reconstructed image from PCA
-
-    Returns:
-        tuple: (fig, ax1, ax2, ax3) matplotlib figure and axes objects
-    """
-
-    # Please use the format below to ensure grading consistency
-    fig, (ax1, ax2, ax3) = plt.subplots(figsize=(9,3), ncols=3)
-    fig.tight_layout()
-
     # Reshape all the image vectors into 2D or 3D matrices
     reshaped_fullres = im_orig_fullres.reshape(218, 178, 3)
     reshaped_orig = im_orig.reshape(60, 50)
