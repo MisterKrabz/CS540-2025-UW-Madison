@@ -193,8 +193,23 @@ class NGramCharLM:
         Note: Context is always the last (n-1) characters before current position.
           For positions near the beginning, context may be shorter than (n-1).
         """
-        # Your implementation goes here!
-        raise NotImplementedError
+
+        self.vocab = set(text)
+
+        for i in range(len(text)):
+            start_index = max(0, i - (self.n - 1))
+            context = text[start_index:i]
+            
+            char = text[i]
+
+            if context not in self.counts:
+                self.counts[context] = {}
+            
+            self.counts[context][char] = self.counts[context].get(char, 0) + 1
+
+        self.trained = True
+
+        return self
     
     def _probs_for_context(self, context: str):
         """
@@ -206,8 +221,24 @@ class NGramCharLM:
         Returns:
             dict[str, float]: Dictionary mapping characters to probabilities
         """
-        # Your implementation goes here!
-        raise NotImplementedError
+        if self.n > 1:
+            effective_context = context[-(self.n - 1):]
+        else:
+            effective_context = ""
+
+        probabilities = {char: 0.0 for char in self.vocab}
+        
+        context_counts = self.counts.get(effective_context, {})
+
+        total_count = sum(context_counts.values())
+
+        if total_count == 0:
+            return probabilities
+
+        for char, count in context_counts.items():
+            probabilities[char] = count / total_count
+            
+        return probabilities
     
     def prob(self, s: str) -> float:
         """
@@ -274,27 +305,19 @@ class NGramCharLM:
         out = list(seed)
 
         for _ in range(num_chars):
-            # Get probability distribution for current context
-            dist = self._probs_for_context("".join(out))
+            current_text = "".join(out)
+            context = current_text[-(self.n - 1):] if self.n > 1 else ""
+ 
+            dist = self._probs_for_context(context)
 
-            if not dist:
+            if not dist or sum(dist.values()) < 0.99: 
                 break
 
-            # Extract characters and probabilities
             chars, probs = zip(*dist.items())
 
-            # Cumulative sampling
-            r = random.random()
-            s = 0.0
-            pick = chars[-1]  # fallback to last character
-
-            for ch, p in zip(chars, probs):
-                s += p
-                if r <= s:
-                    pick = ch
-                    break
-
-            out.append(pick)
+            next_char = random.choices(chars, weights=probs, k=1)[0]
+            
+            out.append(next_char)
 
         return "".join(out)
 
