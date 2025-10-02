@@ -74,11 +74,11 @@ def get_eig_prop(S, prop):
     desc_eigenvalues = np.flip(all_eigenvalues)
     desc_eigenvectors = np.flip(all_eigenvectors, axis=1)
 
-    propoertions = desc_eigenvalues / total_variance
-    indicies_to_keep = np.cumsum(propoertions) <= prop
+    proportions = desc_eigenvalues / total_variance
+    indices_to_keep = proportions > prop
 
-    selected_eigenvalues = desc_eigenvalues[indicies_to_keep]
-    selected_eigenvalues = desc_eigenvectors[:, indicies_to_keep]
+    selected_eigenvalues = desc_eigenvalues[indices_to_keep]
+    selected_eigenvectors = desc_eigenvectors[:, indices_to_keep]
     Lambda = np.diag(selected_eigenvalues)
 
     return Lambda, selected_eigenvalues
