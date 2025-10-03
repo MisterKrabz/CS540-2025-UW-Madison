@@ -75,13 +75,13 @@ def get_eig_prop(S, prop):
     desc_eigenvectors = np.flip(all_eigenvectors, axis=1)
 
     proportions = desc_eigenvalues / total_variance
-    indices_to_keep = proportions > prop
+    indices_to_keep = proportions >= prop
 
     selected_eigenvalues = desc_eigenvalues[indices_to_keep]
     selected_eigenvectors = desc_eigenvectors[:, indices_to_keep]
     Lambda = np.diag(selected_eigenvalues)
 
-    return Lambda, selected_eigenvalues
+    return Lambda, selected_eigenvectors
 
 def project_and_reconstruct_image(image, U):
     """
@@ -323,19 +323,12 @@ class NGramCharLM:
 
 if __name__ == "__main__":
     X = load_and_center_dataset('celeba_60x50.npy')
-
     S = get_covariance(X)
-    
     Lambda, U = get_eig(S, 50)
-    
     celeb_idx = 34 
-    
     x = X[celeb_idx]
-    
     x_fullres = np.load('celeba_218x178x3.npy')[celeb_idx]
-    
     reconstructed = project_and_reconstruct_image(x, U)
-    
     fig, ax1, ax2, ax3 = display_image(x_fullres, x, reconstructed)
     
     plt.show()
