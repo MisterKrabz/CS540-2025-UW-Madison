@@ -113,7 +113,7 @@ if __name__ == "__main__":
         symbol = "="
 
     print("Q6a: " + symbol)
-    print("Q6b: if w = 0, the year has no impact on the number of days the lake was frozen.\nif w > 0 then it would indicate as the year increases, the number of frozen days tends to increase as well.\nif w < 0 then it would indicate that as the year increases, the number of frozen days tends to decrease.")
+    print("Q6b: if w = 0, the year has no impact on the number of days the lake was frozen. if w > 0 then it would indicate as the year increases, the number of frozen days tends to increase as well. if w < 0 then it would indicate that as the year increases, the number of frozen days tends to decrease.")
 
 
     #Question 7 - Model Limitations
